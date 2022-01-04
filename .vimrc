@@ -1,56 +1,51 @@
-syntax on
 
-set background=dark
-colorscheme PaperColor
-set number
-set relativenumber
-set smartindent
-set tabstop=4
-set shiftwidth=4
-set expandtab
+set nocompatible
+set encoding=utf-8
 set t_Co=256
+set background=dark
+let g:PaperColor_Theme_Options = {
+  \   'language': {
+  \     'python': {
+  \       'highlight_builtins' : 1
+  \     },
+  \     'cpp': {
+  \       'highlight_standard_library': 1
+  \     },
+  \     'c': {
+  \       'highlight_builtins' : 1
+  \     }
+  \   }
+  \ }
 
-inoremap {<cr> {<cr>}<c-o><s-o>
-inoremap [<cr> [<cr>]<c-o><s-o>
+colorscheme mmolokai
+
+syntax on
+filetype plugin indent on
+set bs=2 tabstop=4 softtabstop=4 shiftwidth=4 expandtab
+hi Normal guibg=NONE ctermbg=NONE
+hi! NonText ctermbg=NONE guibg=NONE
+set aw 
+set autoindent cindent
+set nowrap textwidth=0
+set nu ruler showcmd
+set incsearch ignorecase smartcase
+set scrolloff=5
+set splitright splitbelow
+set clipboard=unnamedplus
+set cursorline
+set scroll=8
+set wildmenu
+set autoread
 inoremap (<cr> (<cr>)<c-o><s-o>
 inoremap { {}<Left>
 inoremap {<CR> {<CR>}<Esc>O
 inoremap {{ {
 inoremap {} {}
-map <F8> :w <CR> :!g++ -DLOCAL -std=c++17 % -o %< && ./%< -Wl,--stack,268435456 <CR>
-map <C-c> :s/^/\/\//<Enter>
-map <C-u> :s/^\/\///<Enter>
-autocmd BufNewFile *.cpp 0r ~/.vim/templates/tk.cpp
-
-python3 from powerline.vim import setup as powerline_setup
-python3 powerline_setup()
-python3 del powerline_setup
-set laststatus=2 " Always display the statusline in all windows
-set showtabline=2 " Always display the tabline, even if there is only one tab
-set noshowmode " Hide the default mode text (e.g. -- INSERT -- below the statusline)
-set t_Co=256
-
-" Change cursor shape in different mode ---------------------------
-" Change cursor shape in Gnome Terminal
-if has("autocmd")
-  au VimEnter,InsertLeave * silent execute '!echo -ne "\e[1 q"' | redraw!
-  au InsertEnter,InsertChange *
-    \ if v:insertmode == 'i' | 
-    \   silent execute '!echo -ne "\e[5 q"' | redraw! |
-    \ elseif v:insertmode == 'r' |
-    \   silent execute '!echo -ne "\e[3 q"' | redraw! |
-    \ endif
-  au VimLeave * silent execute '!echo -ne "\e[ q"' | redraw!
-endif
-
-" Plugins will be downloaded under the specified directory.
-call plug#begin('~/.vim/plugged')
-
-" Use release branch (recommend)
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
-
-" List ends here. Plugins become visible to Vim after this call.
-call plug#end()
-
- inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<CR>"
+nnoremap <C-Left> :tabprevious<CR>
+nnoremap <C-Right> :tabnext<CR>
+" set cc=80 
+set hlsearch
+set foldmethod=marker
+set fillchars=vert:\│
+filetype indent plugin on
 

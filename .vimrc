@@ -49,3 +49,46 @@ set foldmethod=marker
 set fillchars=vert:\│
 filetype indent plugin on
 
+map <C-c> :s/^/\/\//<Enter>
+map <C-u> :s/^\/\///<Enter>
+
+map <F8> :call single_file_runner#do_make()<cr>
+map <F9> :exec single_file_runner#get_execute_command()<cr>
+
+function Tmpl()
+   :0r ~/.vim/template/cp.cpp
+endfunction
+function Db()
+    :r ~/.vim/template/dbg.cpp
+endfunction
+func! SetupCP()
+    let cp_languages = ['cpp', 'c', 'java', 'pascal', 'javascript', 'python', 'kotlin', 'lua', 'rust']
+    func! SetIO() abort closure
+        unlet! b:single_file_input
+        unlet! b:single_file_output
+        unlet! b:single_file_error
+        if index(cp_languages, &filetype) == -1
+            return
+        endif
+        if confirm("Setup IO for cp???", "&Yes\n&No", 1) != 1
+            return
+        endif
+        let b:single_file_input = "main.inp"
+        let b:single_file_output = "main.out"
+        let b:single_file_error = ".log"
+        echom "All set"
+    endfunc
+
+    augroup CPSetup
+        au!
+        autocmd BufRead,BufNewFile * call SetIO()
+    augroup END
+endfunc
+python3 from powerline.vim import setup as powerline_setup
+python3 powerline_setup()
+python3 del powerline_setup
+set laststatus=2 " Always display the statusline in all windows
+set showtabline=2 " Always display the tabline, even if there is only one tab
+set noshowmode " Hide the default mode text (e.g. -- INSERT -- below the statusline)
+set t_Co=256
+

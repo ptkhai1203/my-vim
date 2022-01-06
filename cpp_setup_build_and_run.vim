@@ -1,4 +1,5 @@
 
+
 compiler gcc
 let b:cpp_std = 'c++17'
 let b:cpp_defines = '-DPTK'
@@ -49,3 +50,39 @@ endfunc
 
 let s:mode_chosing_strings = "&Release\n&Debug\n&Fast Release\nFast d&ebug\nCustom &1\nCustom &2"
 let b:presets = [
+            \ s:Preset.new(2, 0, 0),
+            \ s:Preset.new(2, 1, 1),
+            \ s:Preset.new(0, 0, 0),
+            \ s:Preset.new(0, 0, 1),
+            \ s:Preset.new(2, 1, 0),
+            \ s:Preset.new(2, 0, 1)
+            \]
+
+func! s:gen_makeprg() abort
+    let l:choice = confirm('Choose build mode:', s:mode_chosing_strings) - 1
+    if l:choice == -1
+        return 'echo "Abort building"'
+    endif
+
+    return b:presets[l:choice].gen_build_string()
+endfunc
+
+func! CppSetPreset() abort
+    let l:choice = confirm('Choose build mode:', s:mode_chosing_strings) - 1
+    if l:choice == -1
+        echo "No preset is chosen"
+        return 
+    endif
+    
+    let l:new_preset = s:Preset.ask_user()
+    if l:new_preset is v:null
+        echo "Abort setting new preset"
+        return 
+    endif
+    let b:presets[l:choice] = l:new_preset
+    echo "New preset set: "
+    echo l:new_preset.gen_build_string()
+endfunc
+
+let b:gen_makeprg = function('s:gen_makeprg')
+let b:run_single_file_command = './%<.out'
